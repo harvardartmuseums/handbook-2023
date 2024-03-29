@@ -1,0 +1,11 @@
+{{!-- // extract samples from an image
+// based on the colors extracted from the image
+// for each color
+//      find a matching region
+//      generate an image tage with the source set as the IIIF URL for the region --}}
+
+<div class="d-flex">
+{{#each colors}}
+    <div><img src="{{../images.0.baseimageurl}}:IMAGE/{{getRandomRegion ../images.[0]}}/,36/0/default.jpg"></div>
+{{/each}}
+</div>

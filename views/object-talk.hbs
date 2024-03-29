@@ -1,0 +1,92 @@
+<main x-data="chat" class="overflow-hidden w-100 h-100">
+    <div class="container position-absolute top-50 start-50 translate-middle text-center">
+        <div class="row justify-content-md-center">
+            <div class="col-md-4 align-self-center">
+                <img src="{{object.images.[0].baseimageurl}}:IMAGE/full/!300,300/0/default.jpg" style="border-radius: 5%;">
+            </div>
+            <div class="col-md-6">
+                <div x-show="isLoading" class="h2 text-start" id="loader"></div>
+                <div x-show="!isLoading" class="h2 text-start" id="dialog"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.body.style.backgroundColor = 'aliceblue';
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('chat', () => ({
+            isLoading: false,
+            colors: [
+                {{#each object.colors}}
+                    '{{color}}',
+                {{/each}}
+            ],
+            dialog: [],
+
+            init() {
+                this.isLoading = true;
+                let counter = 0;
+                let loader = new TypeIt("#loader", {
+                        speed: 75,
+                        loop: true,
+                        afterString: async (characters, instance) => {
+                            instance.getElement().style.color = this.colors[counter];
+                            document.getElementsByClassName('ti-cursor')[0].style.color = this.colors[counter];
+                            counter +=1;
+                            if (counter >= this.colors.length) {
+                                counter = 0;
+                            }
+                        }
+                    })
+                    .type("Loading...").pause(1000).delete()
+                    .type("Mulling...").pause(1000).delete()
+                    .type("Thinking...").pause(1000).delete()
+                    .type("Pondering...").pause(1000).delete()
+                    .type("Contemplating...").pause(1000).delete()
+                    .type("Cogitating...").pause(1000).delete()
+                    .go();
+                
+                fetch('/chat/{{object.objectid}}')
+                    .then(res => res.json())
+                    .then(res => {
+                        this.isLoading = false;
+                        this.dialog = res.dialog;
+
+                        loader.reset();
+                        this.startTypewriter();
+                    })
+            },
+
+            async startTypewriter() {
+                let alternate = false;
+                let color;
+
+                let typewriter = new TypeIt("#dialog", {
+                    speed: 75,
+                    startDelay: 2900,
+                    loop: false,
+                    beforeString: async (characters, instance) => {
+                        alternate = !alternate;
+                        if (alternate) {
+                            color = '{{object.colors.[0].color}}';
+                        } else {
+                            color = '#000000';
+                        }
+                        instance.getElement().style.color = color;
+                        document.getElementsByClassName('ti-cursor')[0].style.color = color;
+                    }
+                });
+
+                for (let line of this.dialog) {
+                    typewriter
+                        .type(line)
+                        .pause(2000)
+                        .empty();
+                }
+                typewriter.go();
+            }
+        }))
+
+    });
+</script>

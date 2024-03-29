@@ -1,0 +1,21 @@
+<section class="m-4"> 
+    <p>
+        Explore the artworks featured in the handbook.
+    </p>
+    <ul>
+        <li><a href="/list">Basic list</a></li>
+        <li><a href="/gradients">Gradients and samples</a></li>
+        <li><a href="/stats">Statistics</a></li>
+        <li><a href="/chat">Chat with the handbook</a></li>
+    </ul>
+    <hr>
+    <section class="">
+    {{#each data}}
+            <a href="/objects/{{id}}/talk"><img class="p-1" style="border-radius: 50%" src="{{images.[0].baseimageurl}}:IMAGE/square/!75,75/0/default.jpg"></a>
+    {{/each}}
+    </section>
+    <hr>
+    <p>
+        "A museum handbook is a guide to the collections. Different from a visitor guide, which typically provides a floorplan and information about exhibitions that are currently on view, a handbook is often a book-length publication that surveys the institution’s permanent holdings, introducing noteworthy works of art with brief texts and lush illustrations. Handbooks may be used as a reference guide by visitors who want to know more about the works on view, but they are also frequently purchased as souvenirs or gifts."
+    </p>
+</section>

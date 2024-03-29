@@ -1,0 +1,41 @@
+<section x-data="chat">
+    <div id="response" x-text="response"></div>
+    <form @submit.prevent="sendMessage">
+        <input type="text" x-model="message"><button>Chat</button>
+    </form>
+</section>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('chat', () => ({
+            isLoading: false,
+            message: "",
+            response: "",
+
+            init() {
+                this.isLoading = true;
+                
+                {{!-- fetch('/data/selection')
+                    .then(res => res.json())
+                    .then(res => {
+                        this.isLoading = false;
+                        this.records = res;
+                    }) --}}
+            },
+
+            async sendMessage() {
+                let r = await fetch('/chat/message', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        accept: "application/json"
+                    },
+                    body: JSON.stringify({message: this.message})
+                })
+                r = await r.json();
+                this.response = r.response;
+            }
+        }))
+
+    });
+</script>

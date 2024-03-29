@@ -1,0 +1,55 @@
+<p>
+    I am a <mark>{{worktypes.[0].worktype}}</mark>. I am <mark>{{#isTruthy agequalifier}}{{agequalifier}} {{/isTruthy}}{{age}}</mark> years old. I go by <mark>{{title}}</mark>{{#if (gt titlescount 1)}}, and people have also referred to me by <mark>
+        {{#each titles}}
+            {{this.title}}{{#unless @last}}, {{/unless}}
+        {{/each}}</mark>
+    {{/if}}.
+    I came to life in <mark>{{dated}}</mark>{{#isTruthy period}} in the <mark>{{period}}</mark>{{/isTruthy}}{{#isTruthy places}} in <mark>{{places.[0].displayname}}</mark>{{/isTruthy}}.
+    {{#isTruthy people}}
+    <mark>
+    {{#each people}}
+        {{this.name}}{{#unless @last}}, {{/unless}}
+    {{/each}}
+    </mark> 
+    played a pivotal role in my creation.
+    {{/isTruthy}}
+    I belong to the <mark>{{culture}}</mark> culture. I’m made {{#isTruthy medium}}of <mark>{{medium}}</mark>{{/isTruthy}}{{#isTruthy technique}} in the technique of <mark>{{technique}}</mark>{{/isTruthy}}.
+    {{#isTruthy dimNoFrame}}
+    I measure <mark>{{dimNoFrame}}</mark>.
+    {{else}}
+    I measure <mark>{{dimensions}}</mark>.
+    {{/isTruthy}}
+</p>
+<p>
+    {{#isTruthy provenance.text}}
+        {{#if (lte provenancecount 3)}}
+        I used to belong to <mark>{{provenance.text}}</mark>.
+        {{else}}
+        I used to belong to <mark>{{provenancecount}}</mark> past owners.
+        {{/if}}
+    {{/isTruthy}}
+    {{#isTruthy accessionyear}}I came into the collection of the Harvard Art Museums in <mark>{{accessionyear}}</mark>, and{{/isTruthy}} I am now part of the <mark>{{division}}</mark> in my new home. 
+    {{#if (eq publicationcount 0)}}
+        As far as I know, I haven't been published. 
+    {{/if}}
+    {{#if (eq publicationcount 1)}}
+        I have been discussed in <mark>{{publications.[0].title}}</mark> {{#isTruthy publications.[0].publicationyear}}in <mark>{{publications.[0].publicationyear}}</mark>{{/isTruthy}}.
+    {{/if}}
+    {{#if (gt publicationcount 1)}}
+        I’m very popular, as more than <mark>{{publicationcount}}</mark> people have talked about me in their publications. 
+    {{/if}}
+    {{#if (eq exhibitioncount 0)}}
+        As far as I can remember, I have yet to be exhibited in public. 
+    {{/if}}
+    {{#if (gt exhibitioncount 0)}}
+        You may have seen me before. I've been in <mark>{{exhibitioncount}}</mark> exhibitions. 
+    {{/if}}
+</p>
+<p>
+    {{#isTruthy gallery}}
+        If you are interested in meeting with me, I’m available on Level <mark>{{gallery.floor}}</mark>, Room <mark>{{gallery.galleryid}}</mark>, <mark>{{gallery.name}}</mark>{{#isTruthy gallery.theme}}, <mark>{{gallery.theme}}</mark>{{/isTruthy}}. I am in a room with <mark>{{gallery.details.objectcount}}</mark> other objects. I've been here for <mark>{{gallery.age}}</mark> days.
+    {{/isTruthy}}
+</p>
+<p>
+    If you ever want to call me, my basic ID number is <mark>{{id}}</mark> and my formal number is <mark>{{objectnumber}}</mark>.
+</p>  

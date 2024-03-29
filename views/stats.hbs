@@ -1,0 +1,107 @@
+
+<div x-data="stats">
+    <div x-show="isLoading" class="h1">Loading...</div>
+    <div x-show="!isLoading">
+        <details open>
+            <summary class="h3">About the artworks in the handbook</summary>
+            <ul>
+                <li>Total Size of HAM: <span x-text="stats.totalsizeofham"></span></li>
+                <li>Total Objects in the Handbook: <span x-text="stats.totalrecords"></span></li>
+                <li>Total Page Views: <span x-text="stats.totalpageviews"></span> (since 2009)</li>
+                <li>Total Age: about <span x-text="stats.totalage"></span> years</li>
+                <li>Total Publications: <span x-text="stats.totalpublications"></span></li>
+                <li>Total Exhibitions: <span x-text="stats.totalexhibitions"></span></li>
+            </ul>
+        </details>
+
+        <h2>Activities by Year per Object</h2>
+        <div id="multiseries"></div>
+
+        <details>
+            <summary class="h3">Venue Cities</summary>
+            <ul>
+            <template x-for="c in aggregations.venues.by_city.buckets">
+                <li><span x-text="c.doc_count"></span> <span x-text="c.key"></span></li>    
+            </template>             
+            </ul>
+        </details>
+        <details>
+            <summary class="h3">Venue Countries</summary>
+            <ul>
+            <template x-for="c in aggregations.venues.by_country.buckets">
+                <li><span x-text="c.doc_count"></span> <span x-text="c.key"></span></li>    
+            </template>              
+            </ul>
+        </details>
+        <details>
+            <summary class="h3">Divisions</summary>
+            <ul>
+            <template x-for="c in aggregations.by_division.buckets">
+                <li><span x-text="c.doc_count"></span> <span x-text="c.key"></span></li>    
+            </template> 
+            </ul>
+        </details>
+        <details>
+            <summary class="h3">Classifications</summary>
+            <ul>
+            <template x-for="c in aggregations.by_classification.buckets">
+                <li><span x-text="c.doc_count"></span> <span x-text="c.key"></span></li>    
+            </template> 
+            </ul>
+        </details>
+        <details>
+            <summary class="h3">Techniques</summary>
+            <ul>
+            <template x-for="c in aggregations.by_technique.buckets">
+                <li><span x-text="c.doc_count"></span> <span x-text="c.key"></span></li>    
+            </template> 
+            </ul>        
+        </details>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('stats', () => ({
+            records: [],
+            aggregations: {},
+            stats: {},
+            isLoading: false,
+            
+            async init() {
+                this.isLoading = true;
+
+                await this.fetchActivities();
+                await this.fetchStats();
+                await this.fetchFacets();
+
+                document.getElementById('multiseries').appendChild(multiseries(1000, 500, this.aggregations))
+
+                this.isLoading = false;
+            },
+
+            async fetchActivities() {
+                let data = await fetch('/data/activities');
+                data = await data.json();
+                this.records = data.records;
+                this.aggregations = data.aggregations;
+            }, 
+
+            async fetchStats() {
+                let data = await fetch('/data/stats');
+                data = await data.json();
+                console.log(data)
+                this.stats = data;
+            }, 
+
+            async fetchFacets() {
+                let data = await fetch('/data/facets');
+                data = await data.json();
+
+                Object.assign(this.aggregations, data);
+            }
+        }));
+    });
+</script>

@@ -1,0 +1,167 @@
+
+<div x-data="recordsgrid">
+    <div id="menu" x-show="!isLoading"> 
+        <div class="btn-group pe-3" role="group" aria-label="Basic checkbox toggle button group">        
+            <input @click="showInfo = ! showInfo" type="checkbox" class="btn-check" id="bc1" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="bc1">Toggle Info</label>
+
+            <input @click="showGradient = ! showGradient"  type="checkbox" class="btn-check" id="bc3" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary" for="bc3">Toggle Gradient</label>
+
+            <input @click="showSwatches = ! showSwatches"  type="checkbox" class="btn-check" id="bc4" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="bc4">Toggle Swatches</label>
+
+            <input @click="showSamples = ! showSamples"  type="checkbox" class="btn-check" id="bc5" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="bc5">Toggle Samples</label>
+
+            <input @click="showImage = ! showImage"  type="checkbox" class="btn-check" id="bc2" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="bc2">Toggle Images</label>
+
+            <input @click="showSparkline = ! showSparkline"  type="checkbox" class="btn-check" id="bc6" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="bc6">Toggle Sparklines</label>
+        </div>
+
+        <div class="btn-group pe-3" x-data="{field: 'id', sort:'asc'}">
+            <span class="fs-4 pe-2">Reorder</span>
+            <select x-model="field" @change="sortDivsByDataField(field,sort)">
+                <option value="id" selected>id</option>
+                <option value="age">age</option>
+                <option value="rank">rank</option>
+                <option value="totalpageviews">total page views</option>
+            </select>
+
+            <input @click="sort='asc', sortDivsByDataField(field,sort)" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary" for="btnradio1">Asc</label>
+
+            <input @click="sort='desc', sortDivsByDataField(field,sort)" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="btnradio2">Desc</label>
+        </div>
+        
+        <div class="btn-group pe-3" x-data="{field: 'none'}">
+            <span class="fs-4 pe-2">Scale</span>
+            <select x-model="field" @change="scaleRecords(field)">
+                <option value="none" selected>none</option>
+                <option value="id">id</option>
+                <option value="age">age</option>
+                <option value="rank">rank</option>
+                <option value="totalpageviews">total page views</option>
+            </select>
+        </div>
+        
+        <hr>
+    </div>
+
+
+    <div id="records" >            
+        <div x-show="isLoading" class="h1">Loading...</div>
+        <template x-for="record in records">
+            <div @mouseover="" @mouseout="" class="object" :style="`opacity:${record.scale}%;`" :data-id="record.id" :data-age="record.age" :data-rank="record.rank" :data-totalpageviews="record.totalpageviews">
+                <div class="object-info" x-show="showInfo">
+                    <span x-html="getLabel(record)"></span>
+                </div>
+                <div x-show="showSparkline">
+                    <div x-data="$el.appendChild(sparkline(100, 36, record.activity))"></div>
+                </div>
+
+                <template x-if="record.colors">
+                    <div class="d-flex">
+                        <div x-show="showGradient" :style="`width:100%;height:36px;background:${makeGradient(record.colors)};`"></div>
+                        <div x-show="showSwatches">
+                            <div class="d-flex">
+                            <template x-for="color in record.colors">
+                                <div :style="`background:${color.color};height:36px;width:36px;`" :data-color="color.color" :data-hue="color.hue"></div>
+                            </template>
+                            </div>                    
+                        </div>
+                        <div x-show="showSamples">
+                            <div class="d-flex">
+                            <template x-for="color in record.colors">
+                                <div><img :src="`${record.images[0].baseimageurl}:IMAGE/${getRandomRegion(record.images[0])}/,36/0/default.jpg`"></div>
+                            </template>
+                            </div>
+                        </div>
+                        
+                        <div x-show="showImage"><img :src="`${record.images[0].baseimageurl}:IMAGE/full/!36,36/0/default.jpg`"></div>
+                    </div>
+                </template>
+
+            </div>
+        </template>
+    </div>  
+</div>
+
+ 
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('recordsgrid', () => ({
+            records: [],
+            isLoading: false,
+            showInfo: false, 
+            showImage: false,
+            showGradient: true, 
+            showSwatches: false, 
+            showSamples: false, 
+            showSparkline: false,
+            
+            init() {
+                this.isLoading = true;
+                
+                fetch('/data/selection')
+                    .then(res => res.json())
+                    .then(res => {
+                        this.isLoading = false;
+                        this.records = res;
+                    })
+            },
+                
+            makeGradient(colors) {
+                let scale = 100;
+                let steps = [];
+                let stop = 0;
+                
+                colors.forEach((c, i) => {    
+                    if (i>0) stop += Math.round(colors[i-1].percentRounded);
+                    // a stupid hack to clamp the percents at the upper end between 1 and 100
+                    if (stop>=90) stop = stop - (stop - 100 + (colors.length-i)) + 1;
+                    steps.push(`rgba(${c.r},${c.g},${c.b},1) ${stop}%`);
+                })
+                
+                return `linear-gradient(90deg, ${steps.toString()})`;                    
+            },
+
+            getRandomRegion(image, dims) {
+                let size = 50;
+                if (dims) {
+                    size = dims;
+                }
+
+                let minX = Math.ceil(size/2);
+                let maxX = Math.floor(image.width-(size/2));
+                let minY = Math.ceil(size/2);
+                let maxY = Math.floor(image.height-(size/2));
+
+                let pos = {
+                    x: Math.floor(Math.random() * (maxX - minX + 1)) + minX,
+                    y: Math.floor(Math.random() * (maxY - minY + 1)) + minY
+                };
+
+                return `${pos.x},${pos.y},${size},${size}`;
+            },   
+
+            getLabel(record) {
+                return `${record.title}, ${record.accessionyear}, ${record.dated}, (${record.datebegin}-${record.dateend}) ${record.classification}, <a target="_blank" href="https://hvrd.art/o/${record.id}">${record.objectnumber}</a>, 📈${record.rank}, 🔎${record.totalpageviews}`
+            },
+
+            scaleRecords(field) {
+                if (field === 'none') {
+                    this.records.forEach(r => r.scale=100);
+                } else {
+                    let max = Math.max(...this.records.map(r => r[field]));
+                    this.records.forEach(r => {
+                        r.scale = (r[field] / max) * 100;
+                    })
+                }
+            },  
+        }))
+    })
+</script>

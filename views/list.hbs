@@ -1,0 +1,74 @@
+<section>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Provenance</th>
+                <th scope="col">Mad Lib</th>
+                <th scope="col">Label Text</th>
+                <th scope="col">AI Says</th>
+                <th scope="col">Date</th>
+                <th scope="col">Age</th>
+                <th scope="col">Age when Acq.</th>
+                <th scope="col">Year of Acq.</th>
+                <th scope="col"># of Exhibs</th>
+                <th scope="col"># of Pubs</th>
+                <th scope="col">Rank</th>
+                <th scope="col">Gallery</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        {{#each objects}}
+            <tr>
+                <td class="col">
+                    <a href="{{url}}" target="_blank">
+                    <img src="{{images.[0].baseimageurl}}:IMAGE/full/!150,150/0/default.jpg">
+                    </a>
+                </td>
+                <td class="col">
+                    {{#if provenance}}
+                        {{provenance.text}}
+                        <hr>
+                        {{#each provenance.topics}}
+                            {{text}}
+                        {{/each}}
+                    {{/if}}
+                </td>
+                <td class="col">
+                    {{> object_story }}
+                </td>                
+                <td class="col">
+                    {{labeltext}}
+                </td>
+                <td class="col">
+                    <div style="white-space: pre-line">{{openai}}</div>
+                </td>                
+                <td class="col">
+                    {{dated}} ({{datebegin}}, {{dateend}})
+                </td>
+                <td class="col">
+                    {{age}}
+                </td>
+                <td class="col">
+                    {{ageatacquisition}}
+                </td>
+                <td class="col">
+                    {{accessionyear}}
+                </td>
+                <td class="col">
+                    {{exhibitioncount}}
+                </td>
+                <td class="col">
+                    {{publicationcount}}
+                </td>
+                <td class="col">
+                    {{rank}}
+                </td>
+                <td class="col">
+                    {{gallery.gallerynumber}}
+                </td>
+            </tr> 
+        {{/each}}
+        </tbody>
+    </table>
+</section>
