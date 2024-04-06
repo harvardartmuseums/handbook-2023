@@ -4,6 +4,45 @@
 
 A set of tools for exploring data about the objects selected for the revised [Harvard Art Museums Handbook](https://harvardartmuseums.org/tour/755). 
 
+## Developer Notes
+
+### Features
+* [Express 4](https://expressjs.com/) with [Handlebars](https://handlebarsjs.com/) + [Handlebars Helpers](https://www.npmjs.com/package/handlebars-helpers) server-side template engine
+* [HAM API server-side client library](https://www.npmjs.com/package/@harvardartmuseums/ham)
+* [Bootstrap 5.3](https://getbootstrap.com/docs/5.3/getting-started/introduction/) via CDN
+* [Alpine 3](https://alpinejs.dev/) via CDN
+* [Observable Plot](https://observablehq.com/plot/) via CDN
+
+### Requirements
+* Node >=19.1.0
+
+### Environment Setup
+
+#### Install dependencies
+
+```shell
+> npm install
+```
+
+#### Set environment variables
+
+* Clone the file .env-sample as .env  
+* Edit .env in a text editor and set the following variables as needed
+	* NODE_ENV = development | staging | production
+    * HAM_APIKEY = [YOUR HAM API KEY](https://hvrd.art/api)
+
+    Set these if using the "object talk" feature
+    * AZURE_OPENAI_API_KEY
+    * AZURE_OPENAI_API_INSTANCE_NAME
+    * AZURE_OPENAI_API_DEPLOYMENT_NAME
+    * AZURE_OPENAI_API_VERSION
+
+#### Run locally in debug mode
+
+```shell
+> npm run debug
+```
+
 ## Reference Material
 
 Working object list: https://harvardartmuseums.org/tour/755/slide/12143  
@@ -11,14 +50,14 @@ Raw JSON version on slide 12143: https://harvardartmuseums.org/api/tours/755/get
 
 Sparklines with Observable Plot: https://observablehq.com/@fil/plot-sparklines
 
-### Sample Prompt
+### Sample Prompts
 
 #### Basic Chat Prompt for Azure OpenA()
 ```json
 {"systemPrompt":"You are an AI assistant that helps people find information.",
     "fewShotExamples":[],
     "chatParameters":{
-        "deploymentName":"HAM-GPT-4-V-D1",
+        "deploymentName":"[YOUR DEPLOYMENT NAME]",
         "maxResponseLength":800,
         "temperature":0.7,
         "topProbablities":0.95,
@@ -36,7 +75,7 @@ Sparklines with Observable Plot: https://observablehq.com/@fil/plot-sparklines
     "systemPrompt": `You are a visitor at an art museum. You are standing in a gallery. On display are 74 art objects. These are the stories of the objects in their own words. {object-stories}`,
     "fewShotExamples":[],
     "chatParameters": {
-        "deploymentName":"HAM-GPT-4-V-D1",
+        "deploymentName":"[YOUR DEPLOYMENT NAME]",
         "maxResponseLength":800,
         "temperature":0.88,
         "topProbablities":0.95,
