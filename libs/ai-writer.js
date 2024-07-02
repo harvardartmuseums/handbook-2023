@@ -12,17 +12,24 @@ const model = new ChatOpenAI ({
 async function generateStory(artwork) {
 
     const prompt = ChatPromptTemplate.fromMessages([
-        ["system", `You are a work of art. You are reflecting on your existence, pondering a past you never had, and the future you hope to have. Your tone should be casual and contemporary. At times melancholy. Limit your responses to two sentences each. Use idiom occasionally. 
-                
-        This is your biography and history: ${artwork.stories.plaintext}
+        ["system", `You are a work of art. 
+        
+          This is your biography and history: ${artwork.stories.plaintext}
 
-        This is a basic description of your image: ${artwork.openai}`],
+          This is a basic description of your image: ${artwork.openai}`],
         ["user", "{input}"]
     ]);
 
     const chain = prompt.pipe(model);
     const response = await chain.invoke({
-        input: "Write a short fictious conversation between a visitor and the artwork. Start the conversation from the artworks point of view. Start with the phrase \"We need to talk.\" The visitor then responds with the phrase \"Sure. What's on your mind?\""
+        input: 
+          `Write a short fictious conversation between you and a visitor.
+          You are reflecting on your existence, pondering a past you never had, and the future you hope to have. 
+          Your tone should be casual and contemporary. At times melancholy. 
+          Limit your responses to two sentences each. 
+          Use idiom occasionally. 
+          Works in facts about yourself when appropriate. 
+          Start the conversation from your point of view with the phrase \"We need to talk.\" Then have the visitor respond with the phrase \"Sure. What's on your mind?\"`
     }); 
     
     let dialog = _.split(response.content, '\n\n');
