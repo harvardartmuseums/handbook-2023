@@ -75,6 +75,9 @@
                         }
                         instance.getElement().style.color = color;
                         document.getElementsByClassName('ti-cursor')[0].style.color = color;
+                    },
+                    afterComplete: async () => {
+                        console.log(this.dialog);
                     }
                 });
 
