@@ -28,7 +28,7 @@ async function buildLists() {
         let artwork = await api.Objects.get(idList[i]);
 
         // get the openai description
-        if (artwork.images) {
+        if (artwork.images.length > 0) {
           let criteria = {
             q: 'source:"Azure OpenAI Service"',
             image: artwork.images[0].imageid
