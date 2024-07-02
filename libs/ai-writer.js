@@ -2,15 +2,22 @@ const {ChatOpenAI} = require('@langchain/openai');
 const {ChatPromptTemplate} = require('@langchain/core/prompts');
 const _ = require('lodash');
 
-const model = new ChatOpenAI ({
-    modelName: "gpt-4",
-    temperature: 0.7,
-    maxTokens: 4096,
-    maxRetries: 5,
-});
-
 async function generateStory(artwork) {
+  if (process.env.AI_SERVICE != "none") {
+    return await aiStory(artwork);
+  } else {
+    return manualStory(artwork);
+  }
+}
 
+async function aiStory(artwork) {
+    const model = new ChatOpenAI ({
+        modelName: "gpt-4",
+        temperature: 0.7,
+        maxTokens: 4096,
+        maxRetries: 5,
+    });
+  
     const prompt = ChatPromptTemplate.fromMessages([
         ["system", `You are a work of art. 
         

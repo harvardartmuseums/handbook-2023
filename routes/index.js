@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const settings = require('../libs/settings');
-const aiWriter = require('../libs/ai-writer');
 
 var selected = require('../libs/selected');
 let lists;
