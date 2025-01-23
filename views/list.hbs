@@ -24,6 +24,7 @@
                     <a href="{{url}}" target="_blank">
                     <img src="{{images.[0].baseimageurl}}:IMAGE/full/!150,150/0/default.jpg">
                     </a>
+                    <a href="/objects/{{id}}/talk">Object Talk</a>
                 </td>
                 <td class="col">
                     {{#if provenance}}
@@ -35,7 +36,7 @@
                     {{/if}}
                 </td>
                 <td class="col">
-                    {{> object_story }}
+                    {{{stories.html}}}
                 </td>                
                 <td class="col">
                     {{labeltext}}
